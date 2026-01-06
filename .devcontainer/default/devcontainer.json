@@ -1,0 +1,6 @@
+{
+    "image": "ghcr.io/galacticusorg/buildenv:latest",
+    "features": {
+        "ghcr.io/devcontainers/features/github-cli:1": {}
+    }
+}
