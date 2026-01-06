@@ -1558,6 +1558,7 @@ node_get_length(Node * node)
 
 	/* According to node type, calculate length of string representing 
 	 * subtree rooted at node. */
+	printf("START\n");
 	  printf("TYPE %s\n",node->type);
 	switch (node->type) {
 	case 'n':
