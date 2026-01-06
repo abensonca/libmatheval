@@ -23,14 +23,14 @@ jobs:
         run: |
           cd $GITHUB_WORKSPACE
           apt update
-          apt install -y bison flex
+          apt install -y bison flex valgrind
           git config --global --add safe.directory $GITHUB_WORKSPACE
           set -o pipefail
           mkdir -p config
           mkdir -p m4
           touch config/config.rpath
           autoreconf --install --force -I/usr/local/share/aclocal
-          CFLAGS="-I/usr/include/x86_64-linux-gnu" ./configure
+          CFLAGS="-I/usr/include/x86_64-linux-gnu -g" ./configure
           make dist
           cd doc
           make libmatheval.html
@@ -47,7 +47,7 @@ jobs:
       - name: Test code
         run: |
           gcc t.c -I/usr/local/include -L/usr/local/lib -lmatheval -g
-          ./a.out
+          valgrind --track-origins=yes ./a.out
       - name: Build and test
         run: |          
           make -j4 2>&1 | tee build.log
