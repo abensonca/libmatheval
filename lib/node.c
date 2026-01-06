@@ -1583,12 +1583,13 @@ node_get_length(Node * node)
 		return strlen(node->data.variable->name);
 
 	case 'f':
+	  printf("WTF f %s\n",node->data.function.record->name);
 		return strlen(node->data.function.record->name) + 1 +
 		    node_get_length(node->data.function.child) + 1;
 		break;
 
 	case 'g':
-	  printf("WTF %s\n",node->data.function2.record->name);
+	  printf("WTF g %s\n",node->data.function2.record->name);
 		return strlen(node->data.function2.record->name) + 1 +
 		    node_get_length(node->data.function2.left) + 1 +
 		   node_get_length(node->data.function2.right) + 1;
