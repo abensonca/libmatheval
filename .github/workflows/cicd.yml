@@ -43,6 +43,7 @@ jobs:
           make -j4 2>&1 | tee build.log
           grep -v -q Error: build.log
           grep -v -q Warning: build.log
+          make install
           (make -j4 check || { cat tests/testsuite.log; exit 1; }) 2>&1 | tee build.log
           grep -v -q Error: build.log
           grep -v -q Warning: build.log
