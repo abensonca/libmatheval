@@ -44,6 +44,10 @@ jobs:
         with:
           name: docs
           path: 'doc/libmatheval.html'
+      - name: Test code
+        run: |
+          gcc t.c -I/usr/local/include -L/usr/local/lib -lmatheval -g
+          ./a.out
       - name: Build and test
         run: |          
           make -j4 2>&1 | tee build.log
@@ -53,55 +57,3 @@ jobs:
           grep -v -q Error: build.log
           grep -v -q Warning: build.log
           set +o pipefail
-  Update-Release-Tag:
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/master'
-    needs: Build-and-Test
-    steps:
-      - name: Check out repository code
-        uses: actions/checkout@v6
-      - name: Download artifact
-        uses: actions/download-artifact@v7
-        with:
-          name: release-archive
-      - name: Upload to release
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          gh release upload latest libmatheval-1.1.12.tar.gz --clobber
-      - name: Update tag
-        run: |
-          git tag -f latest
-          git push origin -f latest
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  Update-Online-Docs:
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/master'
-    needs: Build-and-Test
-    steps:
-      - name: Check out repository code
-        uses: actions/checkout@v6
-        with:
-          ref: gh-pages
-      - name: Remove old docs
-        run: |
-          mkdir -p doc
-          rm -rf doc
-          mkdir -p doc
-      - name: Download artifact
-        uses: actions/download-artifact@v7
-        with:
-          name: docs
-          path: doc
-      - name: Update online docs
-        run: |
-          git config --global --add safe.directory $GITHUB_WORKSPACE
-          git config --local user.email "github@users.noreply.github.com"
-          git config --local user.name "github-action-validate"
-          git add doc
-          if [ git diff --cached --quiet ]; then
-            git commit -m "Update documentation"
-            git push --set-upstream origin gh-pages
-          fi
-        if: github.event_name != 'pull_request'
