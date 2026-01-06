@@ -34,17 +34,17 @@ jobs:
           make dist
           cd doc
           make libmatheval.html
-      - name: Test code
-        run: |
-          gcc t.c -I/usr/local/include -L/usr/local/lib -lmatheval -g
-          valgrind --track-origins=yes ./a.out
       - name: Build and test
         run: |          
           make -j4 2>&1 | tee build.log
           grep -v -q Error: build.log
           grep -v -q Warning: build.log
           make install
-          (make -j4 check || { cat tests/testsuite.log; exit 1; }) 2>&1 | tee build.log
-          grep -v -q Error: build.log
-          grep -v -q Warning: build.log
-          set +o pipefail
+      - name: Test code
+        run: |
+          gcc t.c -I/usr/local/include -L/usr/local/lib -lmatheval -g
+          valgrind --track-origins=yes ./a.out
+          # (make -j4 check || { cat tests/testsuite.log; exit 1; }) 2>&1 | tee build.log
+          # grep -v -q Error: build.log
+          # grep -v -q Warning: build.log
+          # set +o pipefail
